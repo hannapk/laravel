@@ -135,6 +135,7 @@ $article->user->name
 
 엘로퀀트는 디폴트로 Lazy Loading이다.       
 
+<br /> 
 
 * 해결책 1) `with()` 구문 사용    
 
@@ -148,6 +149,7 @@ $articles = Article::with('user')->get();
 select * from 'users' where 'users'.'id' in (?)
 ```
 
+<br />  
 
 * 해결책 2) load 구문 사용   
 
@@ -156,4 +158,20 @@ $articles->load('user');
 ```
 
 전체 로직에서 user를 사용하지 않고 Response에서만 전달하는 경우 `load()` 구문을 사용하면 된다.   
+
+<br /> 
+
+### Exception   
+전역 예외처리기: `app/Exceptions/Handler/php`    
+
+
+* `report(exception: Exception)`   
+    - 예외를 보고한다.    
+    - 예외 발생 리포트한 이후의 로직을 이어서 수행  
+
+
+* `render(request: Request, exception: Exception): Response`     
+    - 예외를 화면에 표시   
+    - return으로 HTTP 응답을 반환하고 이후의 로직 처리 없이 종료      
+
 
