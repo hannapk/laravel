@@ -122,6 +122,38 @@ php artisan route:list
 
 <br />
 
+### N+1 문제  
+`User (1) ⎯ (*) Article`    
+
+```
+$article->user->name
+```
+
+위와 같이 접근하면 각 Article의 user를 조회하기 위한 쿼리가 발생한다.     
+즉 N+1 문제가 발생한다.    
 
 
+엘로퀀트는 디폴트로 Lazy Loading이다.       
+
+
+* 해결책 1) `with()` 구문 사용    
+
+```
+$articles = Article::with('user')->get();
+```
+
+`with()` 구문을 사용하는 경우, `IN` 연산자로 한번에 쿼리가 실행된다.
+
+```
+select * from 'users' where 'users'.'id' in (?)
+```
+
+
+* 해결책 2) load 구문 사용   
+
+```
+$articles->load('user');
+```
+
+전체 로직에서 user를 사용하지 않고 Response에서만 전달하는 경우 `load()` 구문을 사용하면 된다.   
 

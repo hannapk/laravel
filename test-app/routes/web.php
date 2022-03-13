@@ -44,16 +44,18 @@ Route::get('/', 'WelcomeController@index');
 // resource는 거의 사용하지 않음
 Route::resource('articles', 'ArticlesController');
 
-// 인증에 필요한 페이지
-Route::get('/protected', [
-    'middleware' => 'auth',
-    function () {
-        $output = new \Symfony\Component\Console\Output\ConsoleOutput();
-        $output->writeln(json_encode(session()->all(), JSON_PRETTY_PRINT));
-
-        return "Welcome " . auth()->user()->name;
+/****************************************
+ * 사용자 인증 관련 Routes
+ ****************************************/
+Route::get('/protected', function () {
+    $output = new \Symfony\Component\Console\Output\ConsoleOutput();
+    $output->writeln(json_encode(session()->all(), JSON_PRETTY_PRINT));
+    if (!auth()->check()) {
+        return "Who are you?";
     }
-]);
+
+    return "Welcome " . auth()->user()->name;
+});
 
 // 로그인 페이지
 Route::get('/auth/login', function () {
@@ -62,7 +64,7 @@ Route::get('/auth/login', function () {
         'password' => 'password'
     ];
 
-    if (!auth()->attempt($credentials)) { // 로그인 처리
+    if (!auth()->attempt($credentials)) {
         return 'Email & password does not match';
     }
 
@@ -74,3 +76,11 @@ Route::get('/auth/logout/', function () {
     auth()->logout();
     return 'See you';
 });
+
+/****************************************
+ * Database listener
+ ****************************************/
+DB::listen(function ($query) {
+    dump($query->sql);
+});
+

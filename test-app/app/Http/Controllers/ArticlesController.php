@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Article;
 use Illuminate\Http\Request;
 
 class ArticlesController extends Controller
@@ -13,7 +14,15 @@ class ArticlesController extends Controller
      */
     public function index()
     {
-        return 'index called';
+//        $articles = Article::get();
+////      $articles = Article::with('user')->get();
+//
+//        $articles->load('user');
+//
+//        return view('articles.index', compact('articles'));
+//
+        $articles = Article::get();
+        return view('articles.index', compact('articles'));
     }
 
     /**
